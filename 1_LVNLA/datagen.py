@@ -9,7 +9,23 @@ def rand(domain):
     return r.randint(domain[0], domain[1])
 
 def randbinary(size):
-    pass
+     maxint = size**2 - 1  
+     number = rand([0, maxint])
+     binnumber = binarify(number, size)
+     return (binnumber, number)
+
+def binarify(number, size=-1):
+    binarystring = "{0:b}".format(number)
+    entry = []
+
+    # pad with zeros as needed
+    if size != -1:
+        for i in range(0, size-len(binarystring)):
+            entry.append(0)
+        
+    for char in binarystring:
+        entry.append(int(char))
+    return entry
 
 def save(filename, data):
     print("Saving data to '" + str(filename) + "'...")
@@ -54,6 +70,39 @@ def gen_basic_exp(count, i1_domain, i2_domain):
     return data
 
 def gen_binary_addition(count, i1_size, i2_size, output_size):
+    print("Generating basic binary addition dataset of size " + str(count) + "...")
+    print("Sizes: " + str(i1_size) + "," + str(i2_size))
+    
+    data = []
+    
+    for i in range(0,count):
+
+        validsize = False
+        i1 = None 
+        i2 = None 
+        output = None 
+
+        while not validsize:
+            i1 = randbinary(i1_size)
+            i2 = randbinary(i2_size)
+
+            outputsum = i1[1]+i2[1]
+            if outputsum <= output_size**2 - 1:
+                output = binarify(outputsum, output_size)
+                validsize = True
+
+        row = []
+        for bit in i1[0]:
+            row.append(bit)
+        for bit in i2[0]:
+            row.append(bit)
+        for bit in output:
+            row.append(bit)
+            
+        data.append(row)
+
+    print("Generated!")
+    return data
     pass
 
 def gen_binary_exp(count, i1_size, i2_size, output_size):
