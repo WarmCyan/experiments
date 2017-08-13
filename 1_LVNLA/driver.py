@@ -5,5 +5,5 @@ from datagen import *
 #result = gen_basic_exp(10, [0,10], [0,10])
 #print(result)
 #result = gen_quadratic(10, [0,10],[0,10],[0,10])
-result = gen_binary_addition(10, 4,4,5)
+result = gen_binary_exp(10, 4,4,8)
 print(result)

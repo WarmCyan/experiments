@@ -103,10 +103,41 @@ def gen_binary_addition(count, i1_size, i2_size, output_size):
 
     print("Generated!")
     return data
-    pass
 
 def gen_binary_exp(count, i1_size, i2_size, output_size):
-    pass
+    print("Generating basic binary exponential dataset of size " + str(count) + "...")
+    print("Sizes: " + str(i1_size) + "," + str(i2_size))
+    
+    data = []
+    
+    for i in range(0,count):
+
+        validsize = False
+        i1 = None 
+        i2 = None 
+        output = None 
+
+        while not validsize:
+            i1 = randbinary(i1_size)
+            i2 = randbinary(i2_size)
+
+            outputpow = i1[1]**i2[1]
+            if outputpow <= output_size**2 - 1:
+                output = binarify(outputpow, output_size)
+                validsize = True
+
+        row = []
+        for bit in i1[0]:
+            row.append(bit)
+        for bit in i2[0]:
+            row.append(bit)
+        for bit in output:
+            row.append(bit)
+            
+        data.append(row)
+
+    print("Generated!")
+    return data
 
 def gen_circle_class(count, i1_domain, i2_domain, h_domain, k_domain, r_domain):
     print("Generating quadratic classification dataset of size " + str(count) + "...")
