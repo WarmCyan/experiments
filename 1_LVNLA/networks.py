@@ -23,29 +23,37 @@ class FFNet:
         self.layer_activations = []
         
         # set up inputs and outputs
-        self.input = tf.placeholder(tf.float32, shape=[None, self.structure[1]])
-        self.output = tf.placeholder(tf.float32, shape=[None, self.structure[-1]])
+        self.input = tf.placeholder(tf.float32, shape=[None, self.structure[0]])
+        self.output_ = tf.placeholder(tf.float32, shape=[None, self.structure[-1]])
 
         prev_layer = self.input
 
         # set up hidden layers
-        for i in range(1, len(structure)-1):
+        for i in range(1, len(self.structure)):
             self.weights.append(tf.Variable(tf.zeros([self.structure[i-1], self.structure[i]])))
             self.biases.append(tf.Variable(tf.zeros([self.structure[i]])))
-            
-            self.layer_calcs.append(tf.add(tf.matmul(prev_layer, self.weights[i]), self.biases[i]))
 
-            if self.activation_id == 1:
-                self.layer_activations.append(self.layer_calcs[i])
+            layer_i = i - 1
+            
+            self.layer_calcs.append(tf.add(tf.matmul(prev_layer, self.weights[layer_i]), self.biases[layer_i]))
+
+            if self.activation_id == 1 or i == len(self.structure) - 1: # leave final output alone (no activation)
+                self.layer_activations.append(self.layer_calcs[layer_i])
             elif self.activation_id == 2:
-                self.layer_activations.append(tf.nn.relu(self.layer_calcs[i]))
+                self.layer_activations.append(tf.nn.relu(self.layer_calcs[layer_i]))
             elif self.activation_id == 3:
-                self.layer_activations.append(tf.nn.sigmoid(self.layer_calcs[i]))
+                self.layer_activations.append(tf.nn.sigmoid(self.layer_calcs[layer_i]))
             elif self.activation_id == 4:
-                self.layer_activations.append(tf.nn.tanh(self.layer_calcs[i]))
-
+                self.layer_activations.append(tf.nn.tanh(self.layer_calcs[layer_i]))
+            else: print("ERROR - invalid activation id '" + str(self.activation_id) + "'")
             
-        
+            prev_layer = self.layer_activations[layer_i]
+
+        self.output = self.layer_activations[-1]
+    # TODO: determine type of loss (based on whether classification or not)
+    # TODO: also, might need a softmax for categorical?
+
+
 
     def train(self):
         pass
@@ -56,12 +64,12 @@ class FFNet:
 
 
     
-x_size = 2
-y_size = 1
+#x_size = 2
+#y_size = 1
 
 # network input and output placeholders
-x = tf.placeholder("int", shape=[None, x_size])
-y = tf.placeholder("int", shape=[None, x_size])
+#x = tf.placeholder("int", shape=[None, x_size])
+#y = tf.placeholder("int", shape=[None, x_size])
 
 # weight initializations
 
