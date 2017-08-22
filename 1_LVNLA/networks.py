@@ -4,14 +4,18 @@ class FFNet:
 
     # structure should be an array of sizes [in, w1, w2, ...., out]
     # activation_ids: 1 = identity, 2 = relu, 3 = sigmoid, 4 = tanh
-    def __init__(self, structure, activation_id):
+    def __init__(self, structure, activation_id, regression=True, learning_rate=.01):
         self.structure = structure
         self.activation_id = activation_id
         self.session = None
         self.constructed = False
+        self.initalized = False
+        self.regression = regression
+        self.learning_rate = learning_rate
 
     def __del__(self):
-        pass
+        if self.initalized:
+            self.session.close()
     
     def construct(self):
         print("Constructing graph...")
@@ -50,15 +54,30 @@ class FFNet:
             prev_layer = self.layer_activations[layer_i]
 
         self.output = self.layer_activations[-1]
-    # TODO: determine type of loss (based on whether classification or not)
-    # TODO: also, might need a softmax for categorical?
 
+        # regression cost
+        if self.regression: self.cost = tf.reduce_mean(tf.squared_difference(self.output, self.output_))
+        else: self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_)
 
+        self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
+                
+        self.constructed = True
+        print("Graph constructed!")
+    
+    def initialize_session(self):
+        if !self.initalized:
+            if !self.constructed: self.construct()
+            
+            print("Initializing...")
+            self.session = tf.Session()
+            self.session.run(tf.global_variables_initializer())
+            self.initalized = True
+            print("Initialized!")
+    
+    def train(self, graph_input, graph_target):
+        pass              
 
-    def train(self):
-        pass
-
-    def predict(self):
+    def predict(self, graph_input):
         pass
 
 
