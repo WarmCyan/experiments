@@ -9,12 +9,12 @@ class FFNet:
         self.activation_id = activation_id
         self.session = None
         self.constructed = False
-        self.initalized = False
+        self.initialized = False
         self.regression = regression
         self.learning_rate = learning_rate
 
     def __del__(self):
-        if self.initalized:
+        if self.initialized:
             self.session.close()
     
     def construct(self):
@@ -57,38 +57,46 @@ class FFNet:
 
         # regression cost
         if self.regression: self.cost = tf.reduce_mean(tf.squared_difference(self.output, self.output_))
-        else: self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_)
+        else: self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_))
 
-        self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
+        self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
+        self.tester = tf.reduce_mean(tf.cast(tf.equal(tf.round(self.output), self.output_), tf.float32))
                 
         self.constructed = True
         print("Graph constructed!")
     
     def initialize_session(self):
-        if !self.initalized:
-            if !self.constructed: self.construct()
+        if not self.initialized:
+            if not self.constructed: self.construct()
             
             print("Initializing...")
-            self.session = tf.Session()
+            self.session = tf.InteractiveSession()
             self.session.run(tf.global_variables_initializer())
-            self.initalized = True
+            self.initialized = True
             print("Initialized!")
+            
+    # thanks to https://stackoverflow.com/questions/42613747/tensorflow-splitting-training-data-to-batches
+    def train(self, graph_input, graph_target, epochs, batchsize):
+        if not self.initialized: self.initialize_session()
+        
+        # divide into batches
+        print("Batchifying...")
+        batches = []
+        for i in range(int(len(graph_input)/batchsize)):
+            inputs = graph_input[i*batchsize:(i+1)*batchsize]
+            targets = graph_target[i*batchsize:(i+1)*batchsize]
+            batches.append([inputs, targets])
+        print("Batchified!")
     
-    def train(self, graph_input, graph_target):
-        pass              
+        print("Training...")
+        for i in range(epochs):
+            print("Epoch " + str(i))
+            for j in range(len(batches)):
+                self.session.run(self.optimizer.run(feed_dict={self.input: batches[j][0], self.output_: batches[j][1]}))
+                self.session.run(self.test(graph_input, graph_target))
 
-    def predict(self, graph_input):
-        pass
+        print("Training complete")
 
-
-
-    
-#x_size = 2
-#y_size = 1
-
-# network input and output placeholders
-#x = tf.placeholder("int", shape=[None, x_size])
-#y = tf.placeholder("int", shape=[None, x_size])
-
-# weight initializations
-
+    def test(self, graph_input, graph_target):
+        accuracy = self.tester.eval(feed_dict={self.input: graph_input, self.output_: graph_target})
+        print("Accuracy: " + str(accuracy))
