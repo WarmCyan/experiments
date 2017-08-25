@@ -60,7 +60,11 @@ class FFNet:
         else: self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_))
 
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
+        #self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
         self.tester = tf.reduce_mean(tf.cast(tf.equal(tf.round(self.output), self.output_), tf.float32))
+        #self.tester = tf.reduce_mean(tf.cast(tf.equal(tf.round(self.output), self.output_), tf.int32))
+        #self.tester = self.cost
+
                 
         self.constructed = True
         print("Graph constructed!")
@@ -74,6 +78,7 @@ class FFNet:
             self.session.run(tf.global_variables_initializer())
             self.initialized = True
             print("Initialized!")
+            tf.summary.FileWriter("summary", self.session.graph)
             
     # thanks to https://stackoverflow.com/questions/42613747/tensorflow-splitting-training-data-to-batches
     def train(self, graph_input, graph_target, epochs, batchsize):
@@ -92,11 +97,15 @@ class FFNet:
         for i in range(epochs):
             print("Epoch " + str(i))
             for j in range(len(batches)):
-                self.session.run(self.optimizer.run(feed_dict={self.input: batches[j][0], self.output_: batches[j][1]}))
-                self.session.run(self.test(graph_input, graph_target))
+                self.optimizer.run(feed_dict={self.input: batches[j][0], self.output_: batches[j][1]})
+                if j == (len(batches) - 1): self.test(graph_input, graph_target)
 
         print("Training complete")
+        self.test(graph_input, graph_target)
 
     def test(self, graph_input, graph_target):
         accuracy = self.tester.eval(feed_dict={self.input: graph_input, self.output_: graph_target})
         print("Accuracy: " + str(accuracy))
+
+    def predict(self, graph_input):
+        return self.output.eval(feed_dict={self.input: graph_input})

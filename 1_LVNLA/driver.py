@@ -16,11 +16,14 @@ data = pandas.read_csv("testing.csv",header=None)
 out = list(data[2])
 
 inputs = list(zip(data[0], data[1]))
+out = [(j,) for j in out]
+print(str(inputs[0]) + " = " + str(out[0]))
 #print(inputs)
 
-net = FFNet([2,3,1], 1)
-net.train(inputs, out, 2, 100)
-
+net = FFNet([2,10,1], 2)
+net.train(inputs, out, 250, 10)
+result = net.predict([(3,5)])
+print(result)
 
 
 #result = gen_basic_addition(50, [0,10], [0,10])

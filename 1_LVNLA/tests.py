@@ -1,4 +1,5 @@
 import unittest
+import tensorflow as tf
 from networks import *
 
 class NetworkTests(unittest.TestCase):

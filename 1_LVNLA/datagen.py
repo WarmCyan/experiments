@@ -37,6 +37,9 @@ def save(filename, data):
     print("Saved!")
         
 
+def gen_foolproof():
+    pass
+
 def gen_basic_addition(count, i1_domain, i2_domain):
     print("Generating basic addition dataset of size " + str(count) + "...")
     print("Domains: " + str(i1_domain) + "," + str(i2_domain))
