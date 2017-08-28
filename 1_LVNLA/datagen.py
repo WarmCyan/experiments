@@ -37,8 +37,20 @@ def save(filename, data):
     print("Saved!")
         
 
-def gen_foolproof():
-    pass
+def gen_foolproof(count):
+    print("Generating foolproof XOR dataset of size " + str(count) + "...")
+    
+    data = []
+
+    for i in range(0, count):
+        i1 = rand([0,1])
+        i2 = rand([0,1])
+        output = i1 ^ i2
+
+        data.append([i1, i2, output])
+
+    print("Generated!")
+    return data
 
 def gen_basic_addition(count, i1_domain, i2_domain):
     print("Generating basic addition dataset of size " + str(count) + "...")

@@ -30,6 +30,18 @@ class FFNet:
         self.input = tf.placeholder(tf.float32, shape=[None, self.structure[0]])
         self.output_ = tf.placeholder(tf.float32, shape=[None, self.structure[-1]])
 
+
+        #weights1 = tf.Variable(tf.zeros([2, 4]))
+        #bias1 = tf.Variable(tf.zeros([4]))
+
+        #intermed = tf.nn.relu(tf.add(tf.matmul(self.input, weights1), bias1))
+
+        weights2 = tf.Variable(tf.zeros([2,1]))
+        bias2 = tf.Variable(tf.zeros([1]))
+
+        self.output = tf.nn.relu(tf.add(tf.matmul(self.input, weights2), bias2))
+
+        '''
         prev_layer = self.input
 
         # set up hidden layers
@@ -54,10 +66,12 @@ class FFNet:
             prev_layer = self.layer_activations[layer_i]
 
         self.output = self.layer_activations[-1]
+        '''
 
         # regression cost
-        if self.regression: self.cost = tf.reduce_mean(tf.squared_difference(self.output, self.output_))
-        else: self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_))
+        #if self.regression: self.cost = tf.reduce_mean(tf.squared_difference(self.output, self.output_))
+        #else: self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_))
+        self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.output, labels=self.output_))
 
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
         #self.optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate).minimize(self.cost)
@@ -65,7 +79,6 @@ class FFNet:
         #self.tester = tf.reduce_mean(tf.cast(tf.equal(tf.round(self.output), self.output_), tf.int32))
         #self.tester = self.cost
 
-                
         self.constructed = True
         print("Graph constructed!")
     
@@ -105,7 +118,9 @@ class FFNet:
 
     def test(self, graph_input, graph_target):
         accuracy = self.tester.eval(feed_dict={self.input: graph_input, self.output_: graph_target})
+        cost = self.cost.eval(feed_dict={self.input: graph_input, self.output_: graph_target})
         print("Accuracy: " + str(accuracy))
+        print("Cost: " + str(cost))
 
     def predict(self, graph_input):
         return self.output.eval(feed_dict={self.input: graph_input})
