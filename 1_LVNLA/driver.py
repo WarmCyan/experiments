@@ -3,6 +3,21 @@ from networks import *
 
 import pandas
 
+
+data = pandas.read_csv("foolproof.csv",header=None)
+
+inputs = []
+out = []
+
+for i in range(len(data[0])):
+    inputs.append([data[0][i], data[1][i]])
+    out.append([data[2][i], data[3][i]])
+
+import kiss
+kiss.run(inputs, out)
+
+'''
+
 def generate():
     result = gen_basic_addition(1000, [0,50], [0,50])
     save("testing.csv", result)
@@ -44,3 +59,4 @@ print(result)
 #result = gen_quadratic(10, [0,10],[0,10],[0,10])
 #result = gen_binary_exp(10, 4,4,8)
 #print(result)
+'''

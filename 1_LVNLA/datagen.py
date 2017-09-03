@@ -46,8 +46,12 @@ def gen_foolproof(count):
         i1 = rand([0,1])
         i2 = rand([0,1])
         output = i1 ^ i2
+        output1 = 0
+        output2 = 0
+        if output == 1: output1 = 1
+        else: output2 = 1
 
-        data.append([i1, i2, output])
+        data.append([i1, i2, output1, output2])
 
     print("Generated!")
     return data
