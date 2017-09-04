@@ -1,5 +1,5 @@
 from datagen import *
-from networks import *
+from networks2 import *
 
 import pandas
 
@@ -13,8 +13,10 @@ for i in range(len(data[0])):
     inputs.append([data[0][i], data[1][i]])
     out.append([data[2][i], data[3][i]])
 
-import kiss
-kiss.run(inputs, out)
+#import kiss
+#kiss.run(inputs, out)
+
+run(inputs, out, activation=tf.nn.relu, regression=False, name='test')
 
 '''
 
