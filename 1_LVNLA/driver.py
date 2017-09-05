@@ -4,6 +4,18 @@ from networks2 import *
 import pandas
 
 
+
+
+def generate():
+    result = gen_basic_addition(1000, [0,50], [0,50])
+    save("testing.csv", result)
+
+    result = gen_foolproof(1000)
+    save("foolproof.csv", result)
+
+
+generate()
+
 data = pandas.read_csv("foolproof.csv",header=None)
 
 inputs = []
@@ -16,20 +28,21 @@ for i in range(len(data[0])):
 #import kiss
 #kiss.run(inputs, out)
 
-run(inputs, out, activation=tf.nn.relu, regression=False, name='test')
+#run(inputs, out, activation=tf.nn.relu, regression=False, name='test/foolproof')
+
+
+data_add = pandas.read_csv("testing.csv", header=None)
+inputs = []
+out = []
+
+for i in range(len(data_add[0])):
+    inputs.append([data_add[0][i], data_add[1][i]])
+    out.append([data_add[2][i]])
+
+
+run(inputs,out,activation=tf.nn.relu,name='test/addition', out_size=1)
 
 '''
-
-def generate():
-    result = gen_basic_addition(1000, [0,50], [0,50])
-    save("testing.csv", result)
-
-    result = gen_foolproof(1000)
-    save("foolproof.csv", result)
-
-
-generate()
-
 data = pandas.read_csv("foolproof.csv",header=None)
 #in1 = list(data[0])
 #in2 = list(data[1])

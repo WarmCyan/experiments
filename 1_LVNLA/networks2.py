@@ -49,7 +49,7 @@ def run(inputs, targets, in_size=2, out_size=2, h_size=5, h_lcount=1, activation
     # loss function
     with tf.name_scope('loss'):
         if regression:
-            loss = tf.reduce_mean(tf.losses.mean_squared_error(labels=y_, logits=out))
+            loss = tf.reduce_mean(tf.losses.mean_squared_error(labels=y_, predictions=out))
             tf.summary.scalar('loss', loss)
         else:
             cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=out))
@@ -91,7 +91,10 @@ def run(inputs, targets, in_size=2, out_size=2, h_size=5, h_lcount=1, activation
         test_writer.add_summary(summary, i*10000)
         print(acc)
         
-        result = sess.run([out], feed_dict={x:[[0,0]], y_:[[0,1]]})
-        print(result)
-        result = sess.run([out], feed_dict={x:[[0,1]], y_:[[1,0]]})
-        print(result)
+        #result = sess.run([out], feed_dict={x:[[0,0]], y_:[[0,1]]})
+        #print(result)
+        #result = sess.run([out], feed_dict={x:[[0,1]], y_:[[1,0]]})
+        #print(result)
+
+        #result = sess.run([out], feed_dict={x:[[5,6]], y_:[[11]]})
+        #print(result)
