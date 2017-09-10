@@ -1,11 +1,12 @@
 from datagen import *
 from networks2 import *
+from networks import *
 
 import pandas
 
 
 
-
+'''
 def generate():
     result = gen_basic_addition(1000, [0,50], [0,50])
     save("testing.csv", result)
@@ -15,7 +16,7 @@ def generate():
 
 
 generate()
-
+'''
 data = pandas.read_csv("foolproof.csv",header=None)
 
 inputs = []
@@ -24,6 +25,10 @@ out = []
 for i in range(len(data[0])):
     inputs.append([data[0][i], data[1][i]])
     out.append([data[2][i], data[3][i]])
+
+net = FNN([2, 4, 2], "summary/", "simple", tf.nn.sigmoid, learning_rate=.05)
+net.train(inputs, out, 1000, 100)
+print(net.predict([[0,0], [0,1]]))
 
 #import kiss
 #kiss.run(inputs, out)
@@ -39,8 +44,12 @@ for i in range(len(data_add[0])):
     inputs.append([data_add[0][i], data_add[1][i]])
     out.append([data_add[2][i]])
 
+net.stopSession()
+net = FNN([2, 4, 1], "summary/", "addition", tf.nn.relu, regression=True)
+net.train(inputs, out, 1000, 100)
+print(net.predict([[7,6]]))
 
-run(inputs,out,activation=tf.nn.relu,name='test/addition', out_size=1)
+#run(inputs,out,activation=tf.nn.relu,name='test/addition', out_size=1)
 
 '''
 data = pandas.read_csv("foolproof.csv",header=None)
