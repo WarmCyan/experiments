@@ -172,11 +172,16 @@ def gen_circle_class(count, i1_domain, i2_domain, h_domain, k_domain, r_domain):
         r = rand(r_domain)
         
         point = (i1-h)**2 + (i2-k)**2
-        output = 0
+        output1 = 0
+        output2 = 0
         print(str([i1,i2,h,k,r]))
         print(str(point) + " " + str(r**2))
         if point <= r**2:
-            output = 1
+            output1 = 1
+            output2 = 0
+        else:
+            output1 = 0
+            output2 = 1
         
         data.append([i1,i2,h,k,r,output])
         
