@@ -183,7 +183,7 @@ def gen_circle_class(count, i1_domain, i2_domain, h_domain, k_domain, r_domain):
             output1 = 0
             output2 = 1
         
-        data.append([i1,i2,h,k,r,output])
+        data.append([i1,i2,h,k,r,output1,output2])
         
     print("Generated!")
     return data
